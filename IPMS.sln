@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33130.400
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Web", "IPMS.Web\IPMS.Web.csproj", "{4DDE8D76-F138-4CCD-B384-5EE45A053CD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.API", "IPMS.API\IPMS.API.csproj", "{4A2EA785-48E9-4447-9679-F16F78FD2B28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Domain", "IPMS.Domain\IPMS.Domain.csproj", "{26F00186-C305-409E-9B2E-6000FD7F0539}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Application", "IPMS.Application\IPMS.Application.csproj", "{01413CA6-4C2E-40FA-90B2-F4D79D06A46D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Infrastructure", "IPMS.Infrastructure\IPMS.Infrastructure.csproj", "{1E762523-A92A-4127-A297-5BE5A7764698}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Database", "IPMS.Database\IPMS.Database.csproj", "{5046CABF-5222-482F-9CCF-575F7122A174}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DDE8D76-F138-4CCD-B384-5EE45A053CD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DDE8D76-F138-4CCD-B384-5EE45A053CD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DDE8D76-F138-4CCD-B384-5EE45A053CD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DDE8D76-F138-4CCD-B384-5EE45A053CD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A2EA785-48E9-4447-9679-F16F78FD2B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A2EA785-48E9-4447-9679-F16F78FD2B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A2EA785-48E9-4447-9679-F16F78FD2B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A2EA785-48E9-4447-9679-F16F78FD2B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26F00186-C305-409E-9B2E-6000FD7F0539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26F00186-C305-409E-9B2E-6000FD7F0539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26F00186-C305-409E-9B2E-6000FD7F0539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26F00186-C305-409E-9B2E-6000FD7F0539}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01413CA6-4C2E-40FA-90B2-F4D79D06A46D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01413CA6-4C2E-40FA-90B2-F4D79D06A46D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01413CA6-4C2E-40FA-90B2-F4D79D06A46D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01413CA6-4C2E-40FA-90B2-F4D79D06A46D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E762523-A92A-4127-A297-5BE5A7764698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E762523-A92A-4127-A297-5BE5A7764698}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E762523-A92A-4127-A297-5BE5A7764698}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E762523-A92A-4127-A297-5BE5A7764698}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5046CABF-5222-482F-9CCF-575F7122A174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5046CABF-5222-482F-9CCF-575F7122A174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5046CABF-5222-482F-9CCF-575F7122A174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5046CABF-5222-482F-9CCF-575F7122A174}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC86EC98-7C2A-4558-97FA-418A3243FDEE}
+	EndGlobalSection
+EndGlobal
