@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace IPMS.Domain.Common
 {
@@ -12,7 +13,7 @@ namespace IPMS.Domain.Common
     public abstract class Entity<TId>
     {
         public TId Id { get; protected set; }
-
+        private int? _cachedHashCode;
         // Audit columns — same idea as your existing CommonModel base class, just
         // moved onto this shared base so every Entity gets them automatically
         // instead of copy-pasting the same 6 fields into every class.
@@ -28,16 +29,58 @@ namespace IPMS.Domain.Common
 
         public bool IsDelete { get; protected set; }
 
+
+        public bool IsTransient() => EqualityComparer<TId>.Default.Equals(Id, default);
         // Two Entities are considered "the same thing" if they have the same Id —
         // even if every other field on them is different. This is the OPPOSITE
         // rule from ValueObject.cs, which compares by content instead.
         public override bool Equals(object obj)
         {
-            if (obj is not Entity<TId> other) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Id.Equals(other.Id);
+            if (obj == null || obj is not Entity<TId>)
+                return false;
+
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            if (GetType() != obj.GetType())
+                return false;
+
+            var item = (Entity<TId>)obj;
+
+            if (item.IsTransient() || this.IsTransient())
+                return false;
+
+            return EqualityComparer<TId>.Default.Equals(item.Id, Id);
+
+
         }
 
-        public override int GetHashCode() => Id.GetHashCode();
+        public override int GetHashCode()
+        {
+            if (!IsTransient())
+            {
+                if (!_cachedHashCode.HasValue)
+                {
+                    _cachedHashCode = EqualityComparer<TId>.Default.GetHashCode(Id) ^ 31;
+                }
+
+                return _cachedHashCode.Value;
+            }
+
+            return base.GetHashCode();
+        }
+
+        public static bool operator ==(Entity<TId> left, Entity<TId> right)
+        {
+            if (ReferenceEquals(left, null))
+                return ReferenceEquals(right, null);
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Entity<TId> left, Entity<TId> right)
+        {
+            return !(left == right);
+        }
     }
 }
