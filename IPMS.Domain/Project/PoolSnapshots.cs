@@ -56,6 +56,28 @@ namespace IPMS.Domain.Project
             yield return TypeOfOrg;
         }
     }
+    /// <summary>
+    /// Same idea again, for a SubOrganization — the optional "parent" a Post can
+    /// sit under (e.g. an Organization can have multiple SubOrgs; a Post may or
+    /// may not belong to one). Frozen the same way as every other pool field —
+    /// once picked, it belongs to this specific PostAssignment forever.
+    /// </summary>
+    public class SubOrganizationSnapshot : ValueObject
+    {
+        public long? MasterId { get; private set; }
+        public string Text { get; private set; }
+
+        private SubOrganizationSnapshot() { }
+
+        public static SubOrganizationSnapshot Of(long? masterId, string text)
+            => new SubOrganizationSnapshot { MasterId = masterId, Text = text };
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return MasterId;
+            yield return Text;
+        }
+    }
 
     /// <summary> Same idea again, for Post — which also carries extra fields. </summary>
     public class PostSnapshot : ValueObject

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using IPMS.Domain.Common;
@@ -8,9 +9,10 @@ namespace IPMS.Domain.Project
     /// <summary>
     /// THE AGGREGATE ROOT. This is the ONE class the rest of the application is
     /// allowed to load and save directly (through IProjectRepository — not shown
-    /// in this skeleton yet). Everything else (Batches, PostSpecializations,
-    /// ExamStructure nodes...) is reached only THROUGH this class — nothing
-    /// outside is allowed to load a Batch or a TestStructureNode on its own.
+    /// in this skeleton yet). Everything else (Batches, ProjectNumbers,
+    /// PostAssignments, ExamStructure nodes...) is reached only THROUGH this
+    /// class — nothing outside is allowed to load a Batch or a
+    /// TestStructureNode on its own.
     /// </summary>
     public class Project : AggregateRoot<long>
     {
@@ -19,18 +21,33 @@ namespace IPMS.Domain.Project
 
         public List<Batch> Batches { get; private set; } = new();
         public List<Revision> Revisions { get; private set; } = new();
-        public List<PostSpecialization> PostSpecializations { get; private set; } = new();
         public List<TestStructureNode> ExamStructureSubjects { get; private set; } = new();   // top-level nodes only; each has its own Children
+
+        // ProjectNumber owns its own PostAssignments (and each PostAssignment
+        // owns its own Specializations) — see ProjectNumber.cs and
+        // PostAssignment.cs. Posts/Specializations are declared HERE, under a
+        // ProjectNumber, but every downstream tab references a
+        // PostAssignment/Specialization Id directly, unscoped by which
+        // ProjectNumber it came from — ownership stops at ProjectNumber, it
+        // does not cascade any further into Phase/Penalty/Sessions/etc.
         public List<ProjectNumber> ProjectNumbers { get; private set; } = new();
 
-        // Every other tab's collection (ExamPhaseDetail, PenaltyAndAnswerOption,
-        // DateWiseSession, CandidateCount, CoOrdinatorDetail, UploadDocument, etc.)
-        // follows the exact same simple pattern as PostSpecialization — a plain
-        // Entity<long> that carries a List<long> of PostSpecializationIds it
-        // refers to. Left out of this first skeleton so it stays easy to review;
-        // happy to add them once you've looked this over.
+        public List<ExamPhaseDetail> ExamPhaseDetails { get; private set; } = new();
 
-        public Batch CurrentBatch => Batches.Single(b => b.Status != BatchStatus.Approved);
+        // Every OTHER tab's collection (PenaltyAndAnswerOption, DateWiseSession,
+        // CandidateCount, CoOrdinatorDetail, UploadDocument, etc.) follows the
+        // exact same simple pattern as ExamPhaseDetail above — a plain
+        // BatchScopedEntity<long> that carries a List<long> of PostAssignment/
+        // Specialization Ids it refers to. Left out of this first skeleton so
+        // it stays easy to review; happy to add them once you've looked this over.
+
+        // The Batch currently "in play" for this Project — either still being
+        // edited/reviewed/approved, OR the most recently Approved one if
+        // nobody has clicked Edit since. NOT the same as "the one non-Approved
+        // batch", because right after an Approval there may be ZERO non-Approved
+        // batches at all — ordering by Id and taking the highest one covers
+        // BOTH situations correctly.
+        public Batch LatestBatch => Batches.OrderByDescending(b => b.Id).First();
 
         private Project() { }
 
@@ -48,6 +65,39 @@ namespace IPMS.Domain.Project
         }
 
         /// <summary>
+        /// Declares a new ProjectNumber, e.g. "IBPS/SEL/0001". Automatically
+        /// starts life in whichever Batch is currently active — the caller
+        /// never has to think about BatchId directly.
+        /// </summary>
+        public ProjectNumber AddProjectNumber(string orgAbbr, string projectTypeAbbr)
+        {
+            var projectNumber = ProjectNumber.Seed(orgAbbr, projectTypeAbbr);
+            projectNumber.AssignBatch(LatestBatch.Id);
+            ProjectNumbers.Add(projectNumber);
+            return projectNumber;
+        }
+
+        /// <summary> Adds a new Exam Phase combination, e.g. "Post A + Post D -> Single Stage -> Objective". </summary>
+        public ExamPhaseDetail AddExamPhaseDetail(
+            IEnumerable<long> postAssignmentIds, IEnumerable<long> specializationIds,
+            string examStage, IEnumerable<string> testTypes)
+        {
+            var phase = ExamPhaseDetail.Create(postAssignmentIds, specializationIds, examStage, testTypes);
+            phase.AssignBatch(LatestBatch.Id);
+            ExamPhaseDetails.Add(phase);
+            return phase;
+        }
+
+        /// <summary> Adds a new top-level Subject to the exam structure tree (see TestStructureNode.cs). </summary>
+        public TestStructureNode AddExamStructureSubject(string name, long nodeTypeId, int sequenceNo)
+        {
+            var subject = TestStructureNode.CreateSubject(name, nodeTypeId, sequenceNo);
+            subject.AssignBatch(LatestBatch.Id);
+            ExamStructureSubjects.Add(subject);
+            return subject;
+        }
+
+        /// <summary>
         /// Runs EVERY validation rule across the WHOLE project — every child
         /// collection, every node in the exam structure tree — and collects every
         /// problem found (both blocking Errors and advisory Warnings) into one
@@ -59,10 +109,28 @@ namespace IPMS.Domain.Project
         {
             var result = new ValidationResult();
 
-            // Cross-tab referential integrity (Option 3) would loop over
-            // ExamPhaseDetail etc. here, checking every PostSpecializationIds
-            // reference still exists in PostSpecializations — added once those
-            // collections are written.
+            // Gather every PostAssignment/Specialization Id that exists ANYWHERE
+            // across ALL ProjectNumbers — not scoped to just one. This is what
+            // makes "Post A (from ProjectNumber 1) + Post D (from ProjectNumber
+            // 2)" a perfectly valid Exam Phase combination: as far as this check
+            // is concerned, there's just one flat pool of known Ids, regardless
+            // of which ProjectNumber originally declared them.
+            var knownPostAssignmentIds = ProjectNumbers
+                .SelectMany(pn => pn.PostAssignments)
+                .Select(pa => pa.Id)
+                .ToList();
+
+            var knownSpecializationIds = ProjectNumbers
+                .SelectMany(pn => pn.PostAssignments)
+                .SelectMany(pa => pa.Specializations)
+                .Select(s => s.Id)
+                .ToList();
+
+            // Cross-tab referential integrity (Option 3) — an orphaned
+            // reference is a blocking Error, but ONLY surfaced here, at
+            // Send-to-Review / Approve time — never mid-edit.
+            foreach (var phase in ExamPhaseDetails)
+                result.AddRange(phase.ValidateReferencesExistIn(knownPostAssignmentIds, knownSpecializationIds));
 
             // Exam structure — walks every Subject/Section/SubSection node and
             // checks the cross-level Penalty consistency rule (and anything else
@@ -83,7 +151,7 @@ namespace IPMS.Domain.Project
         {
             var result = ValidateCurrentState();
             if (!result.HasBlockingErrors)
-                CurrentBatch.SendToReview(userId);
+                LatestBatch.SendToReview(userId);
             return result;
         }
 
@@ -91,24 +159,91 @@ namespace IPMS.Domain.Project
         {
             var result = ValidateCurrentState();
             if (!result.HasBlockingErrors)
-                CurrentBatch.ForwardToApproval(reviewerId);
+                LatestBatch.ForwardToApproval(reviewerId);
             return result;
         }
 
         public void SendBackToMaker(string byUserId, string remarks)
-            => CurrentBatch.SendBackToMaker(byUserId, remarks);
+            => LatestBatch.SendBackToMaker(byUserId, remarks);
 
         /// <summary>
         /// Final approval. Freezes the current batch forever. The user can later
-        /// click "Edit" (a follow-up method, not shown yet) which spawns a brand
-        /// new Batch off this one.
+        /// click "Edit", which calls CreateFollowUpBatch below — spawning a
+        /// brand new Batch and carrying this content forward onto it.
         /// </summary>
         public ValidationResult Approve(string approverId)
         {
             var result = ValidateCurrentState();
             if (!result.HasBlockingErrors)
-                CurrentBatch.Approve(approverId);
+                LatestBatch.Approve(approverId);
             return result;
+        }
+
+        /// <summary>
+        /// User clicks "Edit" on an Approved batch. Creates a brand-new Batch,
+        /// then CARRIES FORWARD every not-soft-deleted content row onto it by
+        /// repointing each row's BatchId — NOT by cloning rows with new Ids.
+        /// Because a row's own Id never changes, every other row that
+        /// references it (Exam Phase pointing at a PostAssignment, for example)
+        /// stays correct automatically. Soft-deleted rows are left exactly
+        /// where they are, still pointing at the old (now-historical) Batch —
+        /// there's nothing to carry forward for something that was deleted.
+        /// </summary>
+        public Batch CreateFollowUpBatch(string createdBy)
+        {
+            var previousBatch = LatestBatch;
+            if (previousBatch.Status != BatchStatus.Approved)
+                throw new InvalidOperationException("Can only branch a new batch off an Approved one.");
+
+            var newBatch = Batch.CreateFollowUp(previousBatch, createdBy);
+            Batches.Add(newBatch);
+
+            var carriedForwardCount = 0;
+
+            foreach (var projectNumber in ProjectNumbers.Where(x => !x.IsDelete))
+            {
+                projectNumber.AssignBatch(newBatch.Id);
+                carriedForwardCount++;
+
+                foreach (var postAssignment in projectNumber.PostAssignments.Where(x => !x.IsDelete))
+                {
+                    postAssignment.AssignBatch(newBatch.Id);
+                    carriedForwardCount++;
+
+                    foreach (var specialization in postAssignment.Specializations.Where(x => !x.IsDelete))
+                    {
+                        specialization.AssignBatch(newBatch.Id);
+                        carriedForwardCount++;
+                    }
+                }
+            }
+
+            foreach (var phase in ExamPhaseDetails.Where(x => !x.IsDelete))
+            {
+                phase.AssignBatch(newBatch.Id);
+                carriedForwardCount++;
+            }
+
+            foreach (var subject in ExamStructureSubjects.Where(x => !x.IsDelete))
+                foreach (var node in subject.SelfAndDescendants().Where(x => !x.IsDelete))
+                {
+                    node.AssignBatch(newBatch.Id);
+                    carriedForwardCount++;
+                }
+
+            // ...the exact same three-line pattern repeats for every remaining
+            // tab collection (PenaltyAndAnswerOption, DateWiseSession,
+            // CandidateCount, CoOrdinatorDetail, UploadDocument, etc.) once
+            // they're written — nothing new to design, just more of the same.
+
+            // ONE summary event, not one per row — this is what lets the audit
+            // log record "Batch 1005 created, carrying forward 200 rows"
+            // instead of 200 near-identical entries burying the changes that
+            // actually matter.
+            RaiseEvent(new BatchFollowUpCreated(
+                PermanentProjectIdentificationNo, previousBatch.Id, newBatch.Id, carriedForwardCount, createdBy));
+
+            return newBatch;
         }
 
         /// <summary>
@@ -125,7 +260,7 @@ namespace IPMS.Domain.Project
                 .FirstOrDefault(b => Revisions.All(r => r.SourceBatchId != b.Id));
 
             if (approvedBatch is null)
-                throw new System.InvalidOperationException("No newly-approved batch is available to publish as a revision.");
+                throw new InvalidOperationException("No newly-approved batch is available to publish as a revision.");
 
             var revision = Revision.CreateFrom(approvedBatch, Revisions, userId);
             Revisions.Add(revision);

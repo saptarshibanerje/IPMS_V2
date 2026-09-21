@@ -20,7 +20,7 @@ namespace IPMS.Domain.Project.ExamStructure
     /// Group Discussion / anything invented later) — adding a brand-new type
     /// never needs a code change, just a new master-data row.
     /// </summary>
-    public class TestStructureNode : Entity<long>
+    public class TestStructureNode : BatchScopedEntity<long>
     {
         public long? ParentNodeId { get; private set; }   // null = this is a top-level Subject
         public NodeLevel Level { get; private set; }
@@ -62,6 +62,7 @@ namespace IPMS.Domain.Project.ExamStructure
                 NodeTypeId = nodeTypeId,
                 SequenceNo = sequenceNo
             };
+            child.AssignBatch(BatchId);   // starts life in the same batch as its parent node
             Children.Add(child);
             return child;
         }
