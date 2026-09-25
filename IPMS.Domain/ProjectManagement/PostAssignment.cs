@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// One Post "declared" under a ProjectNumber — e.g. "Post B, under SubOrg A".

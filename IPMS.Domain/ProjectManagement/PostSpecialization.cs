@@ -1,6 +1,6 @@
 using IPMS.Domain.Common;
 
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// One "Post + Specialization" combination inside a Project (e.g.

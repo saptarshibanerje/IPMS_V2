@@ -1,4 +1,4 @@
-namespace IPMS.Domain.Project.ExamStructure
+namespace IPMS.Domain.ProjectManagement.ExamStructure
 {
     /// <summary>
     /// How deep in the tree a node sits. A "Subject" is the top level (e.g.

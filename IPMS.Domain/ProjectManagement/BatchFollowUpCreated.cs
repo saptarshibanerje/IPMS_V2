@@ -1,4 +1,4 @@
-﻿namespace IPMS.Domain.Project
+﻿namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// Raised once when "Edit" is clicked on an Approved batch and a new Batch

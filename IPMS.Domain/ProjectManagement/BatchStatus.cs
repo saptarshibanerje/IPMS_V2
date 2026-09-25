@@ -1,4 +1,4 @@
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// The states a Batch moves through. See the lifecycle diagram we discussed:

@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.33130.400
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Web", "IPMS.Web\IPMS.Web.csproj", "{4DDE8D76-F138-4CCD-B384-5EE45A053CD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPMS.Web", "IPMS.Web\IPMS.Web.csproj", "{4DDE8D76-F138-4CCD-B384-5EE45A053CD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.API", "IPMS.API\IPMS.API.csproj", "{4A2EA785-48E9-4447-9679-F16F78FD2B28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPMS.API", "IPMS.API\IPMS.API.csproj", "{4A2EA785-48E9-4447-9679-F16F78FD2B28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Domain", "IPMS.Domain\IPMS.Domain.csproj", "{26F00186-C305-409E-9B2E-6000FD7F0539}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPMS.Domain", "IPMS.Domain\IPMS.Domain.csproj", "{26F00186-C305-409E-9B2E-6000FD7F0539}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Application", "IPMS.Application\IPMS.Application.csproj", "{01413CA6-4C2E-40FA-90B2-F4D79D06A46D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPMS.Application", "IPMS.Application\IPMS.Application.csproj", "{01413CA6-4C2E-40FA-90B2-F4D79D06A46D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Infrastructure", "IPMS.Infrastructure\IPMS.Infrastructure.csproj", "{1E762523-A92A-4127-A297-5BE5A7764698}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPMS.Infrastructure", "IPMS.Infrastructure\IPMS.Infrastructure.csproj", "{1E762523-A92A-4127-A297-5BE5A7764698}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Database", "IPMS.Database\IPMS.Database.csproj", "{5046CABF-5222-482F-9CCF-575F7122A174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPMS.Database", "IPMS.Database\IPMS.Database.csproj", "{5046CABF-5222-482F-9CCF-575F7122A174}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPMS.Domain.Tests", "IPMS.Domain.Tests\IPMS.Domain.Tests.csproj", "{8885CC25-06DE-4BB4-B329-AC525994588B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{5046CABF-5222-482F-9CCF-575F7122A174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5046CABF-5222-482F-9CCF-575F7122A174}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5046CABF-5222-482F-9CCF-575F7122A174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8885CC25-06DE-4BB4-B329-AC525994588B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8885CC25-06DE-4BB4-B329-AC525994588B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8885CC25-06DE-4BB4-B329-AC525994588B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8885CC25-06DE-4BB4-B329-AC525994588B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

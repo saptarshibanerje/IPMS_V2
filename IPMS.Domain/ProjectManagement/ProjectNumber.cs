@@ -1,7 +1,7 @@
 using IPMS.Domain.Common;
 using System.Collections.Generic;
 
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// The running-serial Project Number, e.g. "IBPS/SEL/0001".

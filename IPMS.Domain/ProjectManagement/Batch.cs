@@ -1,7 +1,7 @@
 using System;
 using IPMS.Domain.Common;
 
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// A BATCH = one full edit-review-approve cycle. Think of it as a "working

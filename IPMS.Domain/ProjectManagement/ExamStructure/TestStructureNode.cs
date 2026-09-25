@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IPMS.Domain.Common;
 
-namespace IPMS.Domain.Project.ExamStructure
+namespace IPMS.Domain.ProjectManagement.ExamStructure
 {
     /// <summary>
     /// ONE node in the exam structure tree. This single class represents a

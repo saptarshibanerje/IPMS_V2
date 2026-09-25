@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IPMS.Domain.Common;
 
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// A REVISION is NOT a copy of data — it's just a "bookmark" pointing at one

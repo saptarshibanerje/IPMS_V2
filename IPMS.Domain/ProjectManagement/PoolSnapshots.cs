@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IPMS.Domain.Common;
 
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// A "pool" field is anything typed/selected from shared master data (Post,
@@ -56,6 +56,7 @@ namespace IPMS.Domain.Project
             yield return TypeOfOrg;
         }
     }
+
     /// <summary>
     /// Same idea again, for a SubOrganization — the optional "parent" a Post can
     /// sit under (e.g. an Organization can have multiple SubOrgs; a Post may or
@@ -76,6 +77,29 @@ namespace IPMS.Domain.Project
         {
             yield return MasterId;
             yield return Text;
+        }
+    }
+
+    /// <summary>
+    /// Same idea again, for Project Type — also carries an abbreviation, since
+    /// it feeds the Project Number too (the "SEL" in "IBPS/SEL/0001").
+    /// </summary>
+    public class ProjectTypeSnapshot : ValueObject
+    {
+        public long? MasterId { get; private set; }
+        public string Name { get; private set; }
+        public string Abbr { get; private set; }
+
+        private ProjectTypeSnapshot() { }
+
+        public static ProjectTypeSnapshot Of(long? masterId, string name, string abbr)
+            => new ProjectTypeSnapshot { MasterId = masterId, Name = name, Abbr = abbr };
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return MasterId;
+            yield return Name;
+            yield return Abbr;
         }
     }
 

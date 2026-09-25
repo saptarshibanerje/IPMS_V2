@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IPMS.Domain.Common;
 
-namespace IPMS.Domain.Project.ExamStructure
+namespace IPMS.Domain.ProjectManagement.ExamStructure
 {
     /// <summary>
     /// Checks fields that are now allowed to be set at MORE THAN ONE level of the

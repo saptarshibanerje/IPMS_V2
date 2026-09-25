@@ -2,7 +2,7 @@
 using System.Linq;
 using IPMS.Domain.Common;
 
-namespace IPMS.Domain.Project
+namespace IPMS.Domain.ProjectManagement
 {
     /// <summary>
     /// One row on the "Exam Phases & Test Type" tab — e.g. "Post A + Post D ->
